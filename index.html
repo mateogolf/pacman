@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pacman Demo</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- <div class="row">
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="pacman"></div>
+            <div class="empty"></div>
+            <div class="empty"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="coin"></div>
+            <div class="brick"></div>
+        </div>
+        <div class="row">
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+            <div class="brick"></div>
+        </div> -->
+        <div id="world"></div>
+
+        <script>
+            // Features
+            // Have JS display the world: brick/coin/etc
+            // Have pacman move up and down
+
+            var world = [
+                [2,2,2,2,2,2,2,2,2,2,2],
+                [2,3,2,1,1,1,2,1,2,1,2],
+                [2,1,2,1,2,1,2,1,2,1,2],
+                [2,1,2,1,2,1,2,1,2,1,2],
+                [2,1,2,1,2,1,1,1,2,1,2],
+                [2,1,1,1,1,1,2,1,1,1,2],
+                [2,2,2,2,2,2,2,2,2,2,2]
+            ];
+            var up = [-1,0];
+            var down = [1,0];
+            var left = [0,-1];
+            var right = [0,1];
+
+            function PacmanLocation(world){
+                // let result = [];
+                for(let row = 0;row<world.length;row++){
+                    for(let col = 0;col<world[row].length;col++){
+                        if(world[row][col] == 3){
+                            // result.push(i);
+                            // result.push(col);
+                            return [row,col];
+                        }
+                    }
+                }
+            }
+
+            function checkDirection(loc,direction){
+
+            }
+
+            function displayWorld(){
+                var output = '';
+                
+                for(let i = 0;i<world.length;i++){//generates string of given maze
+                    output += `\n<div id='${i}' class='row'>\n`;
+                    for(let j = 0;j<world[i].length;j++){
+                        if(world[i][j] == 3){
+                            output += `<div class='empty' col='${i}'><div id='pacman'></div></div>`;
+                        }
+                        else if(world[i][j] == 2){
+                            output += `<div class='brick' col='${i}'></div>`;
+                        }
+                        else if(world[i][j] == 1){
+                            output += `<div class='coin' col='${i}'></div>`;
+                        }
+                        if(world[i][j] == 0){
+                            output += `<div class='empty' col='${i}'></div>`;
+                        }
+                        // output = output + world[i][j];
+                    }
+                    output += "\n</div>";
+                }
+                // console.log(output);
+                //applies string to html
+                document.getElementById('world').innerHTML = output;
+            }
+            displayWorld();
+            
+            document.onkeydown = function(e){
+                //find pacmanlocation
+                var pacLoc = PacmanLocation(world);
+                if(e.keyCode == 40){//down button
+                    //What is location
+                    console.log(PacmanLocation(world));
+                }
+                if(e.keyCode == 37){//left button
+                    
+                }
+                if(e.keyCode == 39){//right button
+                    
+                }
+                if(e.keyCode == 38){//up button
+                    
+                }
+                console.log(e.keyCode);
+            }
+            
+        </script>
+    </body>
+</html>
