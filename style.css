@@ -55,6 +55,6 @@ div.empty{
     -o-transform: rotate(180deg);
     transform: rotate(180deg);
 }
-#r2-1{
-
+h3, span{
+    color: white;
 }

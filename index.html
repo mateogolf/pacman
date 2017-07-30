@@ -11,14 +11,14 @@
     </head>
     <body>
         <div id="world"></div>
-        <h1>SCORE: <span></span><h1>
+        <h3>SCORE: <span></span></h3>
 
         <script>
             // Features
             // Have JS display the world: brick/coin/etc
             // Have pacman move up and down
 
-            var world = [
+            const defaultWorld = [
                 [2,2,2,2,2,2,2,2,2,2,2],
                 [2,1,2,1,1,1,2,1,2,1,2],
                 [2,1,2,1,2,1,2,1,2,1,2],
@@ -27,26 +27,14 @@
                 [2,1,1,1,1,1,1,1,1,1,2],
                 [2,2,2,2,2,2,2,2,2,2,2]
             ];
-            var up = [-1,0];
-            var down = [1,0];
-            var left = [0,-1];
-            var right = [0,1];
+            const up = [-1,0];
+            const down = [1,0];
+            const left = [0,-1];
+            const right = [0,1];
+            var world = defaultWorld;
             var pacLoc = [1,1]; //Change Start Location Here
-            world[pacLoc[0]][pacLoc[1]] = 3;
             var score = 10;
-
-            // function PacmanLocation(world){
-            //     // let result = [];
-            //     for(let row = 0;row<world.length;row++){
-            //         for(let col = 0;col<world[row].length;col++){
-            //             if(world[row][col] == 3){
-            //                 // result.push(i);
-            //                 // result.push(col);
-            //                 return [row,col];
-            //             }
-            //         }
-            //     }
-            // }
+            
 
             function checkDirection(world,Pacloc,dir){
                 let temp = [(Pacloc[0] + dir[0]),(Pacloc[1] + dir[1])];
@@ -55,22 +43,38 @@
                 }
                 return false;
             }
-            function movePacman(world,Pacloc,dir){
+            function movePacman(Pacloc,dir){
                 let row = (Pacloc[0] + dir[0]);
                 let col = (Pacloc[1] + dir[1]);
-                //remove pacman tag at current location
-                // $('pacman').parent().prob('col')
                 $('#pacman').remove();
                 //add html for new location
-                // console.log(document.querySelector(`#r${row}-${col}`));
                 $(`#r${row}-${col}`).html(`<div id='pacman'></div>`);
-                // $(`#r2-1`).html("<div id='pacman'></div>");
-                $('#pacman').addClass('look-down');
                 return [row,col];
+            }
+            function addScore(world,loc){
+                //if current parent to #pacman is coin
+                // console.log($('#pacman').parent().attr('class'));
+                if(world[loc[0]][loc[1]] === 1){
+                    //increase score by 10
+                    score += 10;
+                    $('span').text(score);
+                    //change value in world to 0
+                    world[loc[0]][loc[1]] = 0;
+                    //remove class in parent div
+                    $('#pacman').parent().removeClass();
+                    $('#pacman').parent().addClass('empty');
+                }
             }
             
             function displayWorld(){
+                //Start values
+                // var world = defaultWorld;
+                // var pacLoc = [3,1]; //Change Start Location Here
+                // var score = 10;
+                world[pacLoc[0]][pacLoc[1]] = 3; //marks start location as 3 for displayWorld function
+                //generate this Game
                 var output = '';
+                var count = 0;
                 for(let i = 0;i<world.length;i++){//generates string of given maze
                     output += `\n<div class='row'>\n`;
                     for(let j = 0;j<world[i].length;j++){
@@ -82,6 +86,7 @@
                         }
                         else if(world[i][j] == 1){
                             output += `<div class='coin' id='r${i}-${j}'></div>`;
+                            count += 1;
                         }
                         if(world[i][j] == 0){
                             output += `<div class='empty' id='r${i}-${j}'></div>`;
@@ -93,51 +98,62 @@
                 document.getElementById('world').innerHTML = output;//applies string to html
                 world[pacLoc[0]][pacLoc[1]] = 0;
                 $('span').text(score);
+                return (count * 10)+score;
             }
             
 
-            displayWorld();
+            var winningScore = displayWorld();
+            alert("The winning score is: "+winningScore);
             document.onkeydown = function(e){
-                var pac = $('#pacman');
-
+                // var pac = $('#pacman');
+                //When Key pressed: rotate pacman, check if new location is clear, move if clear
                 if(e.keyCode == 40){//down button
-                    pac.css('transform','none');
-                    pac.css('transform','rotate(-90deg)');
-                    if(checkDirection(world,pacLoc,down)){
-                        pacLoc = movePacman(world,pacLoc,down);
-                        pac.addClass('look-down');
-                        // console.log(newLoc);
-                        pac.css('transform','none');
-                        pac.css('transform','rotate(-90deg)');
-                        //If newLoc's class is count, then increase score
+                    if(checkDirection(world,pacLoc,down)){//if clear, move and face direction
+                        pacLoc = movePacman(pacLoc,down);
+                        $('#pacman').addClass('look-down');
+                        addScore(world,pacLoc);
+                    }
+                    else{//not clear, only face direction
+                        $('#pacman').removeClass();
+                        $('#pacman').addClass('look-down');
                     }
                 }
                 if(e.keyCode == 37){//left button
-                    pac.css('transform','none');
                     if(checkDirection(world,pacLoc,left)){
-                        pacLoc = movePacman(world,pacLoc,left);
-                    }                  
-                    
+                        pacLoc = movePacman(pacLoc,left);
+                        addScore(world,pacLoc);
+                    }
+                    else{//not clear, face direction only
+                        $('#pacman').removeClass();
+                    }
                 }
                 if(e.keyCode == 39){//right button
-                    pac.css('transform','none');
-                    pac.css('transform','rotate(180deg)');
                     if(checkDirection(world,pacLoc,right)){
-                        pacLoc = movePacman(world,pacLoc,right);
-                        pac.css('transform','rotate(180deg)');
+                        pacLoc = movePacman(pacLoc,right);
+                        $('#pacman').addClass('look-right');
+                        addScore(world,pacLoc);
                     }
-                    
+                    else{//not clear, face direction only
+                        $('#pacman').removeClass();
+                        $('#pacman').addClass('look-right');
+                    }
                 }
                 if(e.keyCode == 38){//up button
-                    pac.css('transform','none');
-                    pac.css('transform','rotate(90deg)');
                     if(checkDirection(world,pacLoc,up)){
-                        pacLoc = movePacman(world,pacLoc,up);
-                        pac.css('transform','rotate(180deg)');
+                        pacLoc = movePacman(pacLoc,up);
+                        $('#pacman').addClass('look-up');
+                        addScore(world,pacLoc);
                     }
-                    
+                    else{//not clear, face direction only
+                        $('#pacman').removeClass();
+                        $('#pacman').addClass('look-up');
+                    }
                 }
                 // console.log(e.keyCode);
+                //Winning Alert
+                if(score == winningScore){
+                    alert("You Win!!!");
+                }
             }
             // })
         </script>
