@@ -34,6 +34,7 @@
             var world = defaultWorld;
             var pacLoc = [1,1]; //Change Start Location Here
             var score = 10;
+            var cherry = [5,6];
             
 
             function checkDirection(world,Pacloc,dir){
@@ -64,6 +65,16 @@
                     $('#pacman').parent().removeClass();
                     $('#pacman').parent().addClass('empty');
                 }
+                if(world[loc[0]][loc[1]] === 4){
+                    //increase score by 10 for coin and 50 for cherry
+                    score += 60;
+                    $('span').text(score);
+                    //change value in world to 0
+                    world[loc[0]][loc[1]] = 0;
+                    //remove class in parent div
+                    $('#pacman').parent().removeClass();
+                    $('#pacman').parent().addClass('empty');
+                }
             }
             
             function displayWorld(){
@@ -71,13 +82,18 @@
                 // var world = defaultWorld;
                 // var pacLoc = [3,1]; //Change Start Location Here
                 // var score = 10;
-                world[pacLoc[0]][pacLoc[1]] = 3; //marks start location as 3 for displayWorld function
+                 //marks start location as 3 for displayWorld function
                 //generate this Game
                 var output = '';
+                world[pacLoc[0]][pacLoc[1]] = 3;
+                world[cherry[0]][cherry[1]] = 4;
                 var count = 0;
                 for(let i = 0;i<world.length;i++){//generates string of given maze
                     output += `\n<div class='row'>\n`;
                     for(let j = 0;j<world[i].length;j++){
+                        if(world[i][j] == 4){
+                            output += `<div class='coin' id='r${i}-${j}'><div class='cherry'></div></div>`;
+                        }
                         if(world[i][j] == 3){
                             output += `<div class='empty' id='r${i}-${j}'><div id='pacman'></div></div>`;
                         }
@@ -98,7 +114,7 @@
                 document.getElementById('world').innerHTML = output;//applies string to html
                 world[pacLoc[0]][pacLoc[1]] = 0;
                 $('span').text(score);
-                return (count * 10)+score;
+                return (count * 10)+score+60;
             }
             
 

@@ -28,11 +28,12 @@ div.empty{
     height: 20px;
     background: url('pacman.gif') no-repeat;
     background-size: cover;
-    /* -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg); */
+}
+.cherry{
+    width: 20px;
+    height: 20px;
+    background: url('3d-cherry.png') no-repeat;
+    background-size: cover;
 }
 .look-down{
     -webkit-transform: rotate(-90deg);
