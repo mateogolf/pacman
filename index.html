@@ -3,113 +3,15 @@
     <head>
         <title>Pacman Demo</title>
         <link rel="stylesheet" href="style.css">
+        <script type="text/javascript"
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+        </script>
     </head>
     <body>
-        <!-- <div class="row">
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="pacman"></div>
-            <div class="empty"></div>
-            <div class="empty"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="coin"></div>
-            <div class="brick"></div>
-        </div>
-        <div class="row">
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-            <div class="brick"></div>
-        </div> -->
         <div id="world"></div>
+        <h1>SCORE: <span></span><h1>
 
         <script>
             // Features
@@ -118,82 +20,126 @@
 
             var world = [
                 [2,2,2,2,2,2,2,2,2,2,2],
-                [2,3,2,1,1,1,2,1,2,1,2],
-                [2,1,2,1,2,1,2,1,2,1,2],
+                [2,1,2,1,1,1,2,1,2,1,2],
                 [2,1,2,1,2,1,2,1,2,1,2],
                 [2,1,2,1,2,1,1,1,2,1,2],
-                [2,1,1,1,1,1,2,1,1,1,2],
+                [2,1,2,1,2,1,1,1,2,1,2],
+                [2,1,1,1,1,1,1,1,1,1,2],
                 [2,2,2,2,2,2,2,2,2,2,2]
             ];
             var up = [-1,0];
             var down = [1,0];
             var left = [0,-1];
             var right = [0,1];
+            var pacLoc = [1,1]; //Change Start Location Here
+            world[pacLoc[0]][pacLoc[1]] = 3;
+            var score = 10;
 
-            function PacmanLocation(world){
-                // let result = [];
-                for(let row = 0;row<world.length;row++){
-                    for(let col = 0;col<world[row].length;col++){
-                        if(world[row][col] == 3){
-                            // result.push(i);
-                            // result.push(col);
-                            return [row,col];
-                        }
-                    }
+            // function PacmanLocation(world){
+            //     // let result = [];
+            //     for(let row = 0;row<world.length;row++){
+            //         for(let col = 0;col<world[row].length;col++){
+            //             if(world[row][col] == 3){
+            //                 // result.push(i);
+            //                 // result.push(col);
+            //                 return [row,col];
+            //             }
+            //         }
+            //     }
+            // }
+
+            function checkDirection(world,Pacloc,dir){
+                let temp = [(Pacloc[0] + dir[0]),(Pacloc[1] + dir[1])];
+                if(world[temp[0]][temp[1]] != 2){
+                    return true;
                 }
+                return false;
             }
-
-            function checkDirection(loc,direction){
-
+            function movePacman(world,Pacloc,dir){
+                let row = (Pacloc[0] + dir[0]);
+                let col = (Pacloc[1] + dir[1]);
+                //remove pacman tag at current location
+                // $('pacman').parent().prob('col')
+                $('#pacman').remove();
+                //add html for new location
+                // console.log(document.querySelector(`#r${row}-${col}`));
+                $(`#r${row}-${col}`).html(`<div id='pacman'></div>`);
+                // $(`#r2-1`).html("<div id='pacman'></div>");
+                $('#pacman').addClass('look-down');
+                return [row,col];
             }
-
+            
             function displayWorld(){
                 var output = '';
-                
                 for(let i = 0;i<world.length;i++){//generates string of given maze
-                    output += `\n<div id='${i}' class='row'>\n`;
+                    output += `\n<div class='row'>\n`;
                     for(let j = 0;j<world[i].length;j++){
                         if(world[i][j] == 3){
-                            output += `<div class='empty' col='${i}'><div id='pacman'></div></div>`;
+                            output += `<div class='empty' id='r${i}-${j}'><div id='pacman'></div></div>`;
                         }
                         else if(world[i][j] == 2){
-                            output += `<div class='brick' col='${i}'></div>`;
+                            output += `<div class='brick' id='r${i}-${j}'></div>`;
                         }
                         else if(world[i][j] == 1){
-                            output += `<div class='coin' col='${i}'></div>`;
+                            output += `<div class='coin' id='r${i}-${j}'></div>`;
                         }
                         if(world[i][j] == 0){
-                            output += `<div class='empty' col='${i}'></div>`;
+                            output += `<div class='empty' id='r${i}-${j}'></div>`;
                         }
                         // output = output + world[i][j];
                     }
                     output += "\n</div>";
                 }
-                // console.log(output);
-                //applies string to html
-                document.getElementById('world').innerHTML = output;
+                document.getElementById('world').innerHTML = output;//applies string to html
+                world[pacLoc[0]][pacLoc[1]] = 0;
+                $('span').text(score);
             }
-            displayWorld();
             
+
+            displayWorld();
             document.onkeydown = function(e){
-                //find pacmanlocation
-                var pacLoc = PacmanLocation(world);
+                var pac = $('#pacman');
+
                 if(e.keyCode == 40){//down button
-                    //What is location
-                    console.log(PacmanLocation(world));
+                    pac.css('transform','none');
+                    pac.css('transform','rotate(-90deg)');
+                    if(checkDirection(world,pacLoc,down)){
+                        pacLoc = movePacman(world,pacLoc,down);
+                        pac.addClass('look-down');
+                        // console.log(newLoc);
+                        pac.css('transform','none');
+                        pac.css('transform','rotate(-90deg)');
+                        //If newLoc's class is count, then increase score
+                    }
                 }
                 if(e.keyCode == 37){//left button
+                    pac.css('transform','none');
+                    if(checkDirection(world,pacLoc,left)){
+                        pacLoc = movePacman(world,pacLoc,left);
+                    }                  
                     
                 }
                 if(e.keyCode == 39){//right button
+                    pac.css('transform','none');
+                    pac.css('transform','rotate(180deg)');
+                    if(checkDirection(world,pacLoc,right)){
+                        pacLoc = movePacman(world,pacLoc,right);
+                        pac.css('transform','rotate(180deg)');
+                    }
                     
                 }
                 if(e.keyCode == 38){//up button
+                    pac.css('transform','none');
+                    pac.css('transform','rotate(90deg)');
+                    if(checkDirection(world,pacLoc,up)){
+                        pacLoc = movePacman(world,pacLoc,up);
+                        pac.css('transform','rotate(180deg)');
+                    }
                     
                 }
-                console.log(e.keyCode);
+                // console.log(e.keyCode);
             }
-            
+            // })
         </script>
     </body>
 </html>
