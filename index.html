@@ -19,13 +19,16 @@
             // Have pacman move up and down
 
             const defaultWorld = [
-                [2,2,2,2,2,2,2,2,2,2,2],
-                [2,1,2,1,1,1,2,1,2,1,2],
-                [2,1,2,1,2,1,2,1,2,1,2],
-                [2,1,2,1,2,1,1,1,2,1,2],
-                [2,1,2,1,2,1,1,1,2,1,2],
-                [2,1,1,1,1,1,1,1,1,1,2],
-                [2,2,2,2,2,2,2,2,2,2,2]
+                [2,2,2,2,2,2,2,2,2,2,2,2,2],
+                [2,1,2,1,1,1,2,1,1,1,2,1,2],
+                [2,1,2,1,2,1,2,1,1,1,2,1,2],
+                [2,1,2,1,2,1,1,1,1,1,2,1,2],
+                [2,1,2,1,2,1,1,1,1,1,2,1,2],
+                [2,1,1,1,1,1,1,1,1,1,1,1,2],
+                [2,1,2,1,2,1,1,1,1,1,2,1,2],
+                [2,1,2,1,2,1,1,1,1,1,2,1,2],
+                [2,1,1,1,1,1,1,1,1,1,1,1,2],
+                [2,2,2,2,2,2,2,2,2,2,2,2,2]
             ];
             const up = [-1,0];
             const down = [1,0];
@@ -35,66 +38,30 @@
             var pacLoc = [1,1]; //Change Start Location Here
             var score = 10;
             var cherry = [5,6];
-            
-
-            function checkDirection(world,Pacloc,dir){
-                let temp = [(Pacloc[0] + dir[0]),(Pacloc[1] + dir[1])];
-                if(world[temp[0]][temp[1]] != 2){
-                    return true;
-                }
-                return false;
-            }
-            function movePacman(Pacloc,dir){
-                let row = (Pacloc[0] + dir[0]);
-                let col = (Pacloc[1] + dir[1]);
-                $('#pacman').remove();
-                //add html for new location
-                $(`#r${row}-${col}`).html(`<div id='pacman'></div>`);
-                return [row,col];
-            }
-            function addScore(world,loc){
-                //if current parent to #pacman is coin
-                // console.log($('#pacman').parent().attr('class'));
-                if(world[loc[0]][loc[1]] === 1){
-                    //increase score by 10
-                    score += 10;
-                    $('span').text(score);
-                    //change value in world to 0
-                    world[loc[0]][loc[1]] = 0;
-                    //remove class in parent div
-                    $('#pacman').parent().removeClass();
-                    $('#pacman').parent().addClass('empty');
-                }
-                if(world[loc[0]][loc[1]] === 4){
-                    //increase score by 10 for coin and 50 for cherry
-                    score += 60;
-                    $('span').text(score);
-                    //change value in world to 0
-                    world[loc[0]][loc[1]] = 0;
-                    //remove class in parent div
-                    $('#pacman').parent().removeClass();
-                    $('#pacman').parent().addClass('empty');
-                }
-            }
+            var ghost = [5,1];
             
             function displayWorld(){
                 //Start values
                 // var world = defaultWorld;
                 // var pacLoc = [3,1]; //Change Start Location Here
                 // var score = 10;
-                 //marks start location as 3 for displayWorld function
+                //marks start location as 3 for displayWorld function
                 //generate this Game
                 var output = '';
                 world[pacLoc[0]][pacLoc[1]] = 3;
                 world[cherry[0]][cherry[1]] = 4;
+                world[ghost[0]][ghost[1]] = 5;
                 var count = 0;
                 for(let i = 0;i<world.length;i++){//generates string of given maze
                     output += `\n<div class='row'>\n`;
                     for(let j = 0;j<world[i].length;j++){
-                        if(world[i][j] == 4){
+                        if(world[i][j] == 5){
+                            output += `<div class='coin' id='r${i}-${j}'><div class='ghost'></div></div>`;
+                        }
+                        else if(world[i][j] == 4){
                             output += `<div class='coin' id='r${i}-${j}'><div class='cherry'></div></div>`;
                         }
-                        if(world[i][j] == 3){
+                        else if(world[i][j] == 3){
                             output += `<div class='empty' id='r${i}-${j}'><div id='pacman'></div></div>`;
                         }
                         else if(world[i][j] == 2){
@@ -116,10 +83,59 @@
                 $('span').text(score);
                 return (count * 10)+score+60;
             }
-            
-
             var winningScore = displayWorld();
-            alert("The winning score is: "+winningScore);
+            // alert("The winning score is: "+winningScore);
+
+            function checkDirection(world,Pacloc,dir){
+                if(Pacloc[0] === 0 && Pacloc[1] === 0){
+                    alert("Refresh to Try again");
+                    return false;
+                }
+                let temp = [(Pacloc[0] + dir[0]),(Pacloc[1] + dir[1])];
+                if(world[temp[0]][temp[1]] != 2){
+                    return true;
+                }
+                return false;
+            }
+
+            function movePacman(Pacloc,dir){
+                let row = (Pacloc[0] + dir[0]);
+                let col = (Pacloc[1] + dir[1]);
+                $('#pacman').remove();
+                //add html for new location
+                $(`#r${row}-${col}`).html(`<div id='pacman'></div>`);
+                return [row,col];
+            }
+            function addScore(world,loc){
+                //if current parent to #pacman is coin
+                // console.log($('#pacman').parent().attr('class'));
+                if(world[loc[0]][loc[1]] === 1){
+                    //increase score by 10
+                    score += 10;
+                    $('span').text(score);
+                    //change value in world to 0
+                    world[loc[0]][loc[1]] = 0;
+                    //remove class in parent div
+                    $('#pacman').parent().removeClass();
+                    $('#pacman').parent().addClass('empty');
+                }
+                else if(world[loc[0]][loc[1]] === 4){
+                    //increase score by 10 for coin and 50 for cherry
+                    score += 60;
+                    $('span').text(score);
+                    //change value in world to 0
+                    world[loc[0]][loc[1]] = 0;
+                    //remove class in parent div
+                    $('#pacman').parent().removeClass();
+                    $('#pacman').parent().addClass('empty');
+                }
+                else if(world[loc[0]][loc[1]] === 5){
+                    alert("You Lost!!");
+                    $('#pacman').remove();
+                    pacLoc = [0,0];
+                }
+            }
+            
             document.onkeydown = function(e){
                 // var pac = $('#pacman');
                 //When Key pressed: rotate pacman, check if new location is clear, move if clear

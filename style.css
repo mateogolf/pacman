@@ -35,6 +35,12 @@ div.empty{
     background: url('3d-cherry.png') no-repeat;
     background-size: cover;
 }
+.ghost{
+    width: 20px;
+    height: 20px;
+    background: url('ghost.gif') no-repeat;
+    background-size: cover;
+}
 .look-down{
     -webkit-transform: rotate(-90deg);
     -moz-transform: rotate(-90deg);
